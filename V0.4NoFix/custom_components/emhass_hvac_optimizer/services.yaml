@@ -1,0 +1,179 @@
+# services.yaml — EMHASS HVAC Optimizer v0.4.0
+# 9 servicios HA para control manual y depuración.
+
+force_emhass_mpc:
+  name: Forzar EMHASS MPC
+  description: >
+    Dispara inmediatamente un ciclo de optimización EMHASS MPC
+    con payload enriquecido (thermal forecast, límite AC/DC dinámico,
+    potencia real bomba, socfinal calibrado).
+  fields: {}
+
+run_autotuner:
+  name: Ejecutar AutoTuner
+  description: >
+    Ejecuta ciclo de auto-calibración. Por defecto calibra todos los
+    parámetros. Usar "target" para calibrar un módulo específico.
+  fields:
+    target:
+      name: Objetivo
+      description: "Módulo a calibrar: all | thermal | cop | zones | battery"
+      required: false
+      default: "all"
+      selector:
+        select:
+          options:
+            - value: "all"
+              label: "Todo (all)"
+            - value: "thermal"
+              label: "Modelo térmico (T_base + thermal_factor)"
+            - value: "cop"
+              label: "Curva COP"
+            - value: "zones"
+              label: "Zonas (τ + demand_weight + preheat)"
+            - value: "battery"
+              label: "Batería (η round-trip + socfinal)"
+
+set_simulation_mode:
+  name: Modo Simulación
+  description: >
+    Activa o desactiva el modo simulación. En modo simulación la
+    integración observa y registra pero NO actúa sobre HVAC ni batería.
+  fields:
+    enabled:
+      name: Activado
+      description: "true = sólo observar | false = actuar"
+      required: true
+      selector:
+        boolean:
+
+set_zone_schedule:
+  name: Ajustar Horario Zona
+  description: >
+    Modifica el horario de confort de una zona. Los cambios se aplican
+    inmediatamente y persisten hasta la próxima recarga de configuración.
+  fields:
+    zone_id:
+      name: Zona
+      description: "ID de la zona (salon | hab_alvaro | hab_inv | hab_mat)"
+      required: true
+      selector:
+        select:
+          options:
+            - value: "salon"
+              label: "Salón"
+            - value: "hab_alvaro"
+              label: "Habitación Álvaro"
+            - value: "hab_inv"
+              label: "Habitación Invitados"
+            - value: "hab_mat"
+              label: "Habitación Matrimonio"
+    schedule_start:
+      name: Inicio horario
+      description: "Hora inicio confort (HH:MM)"
+      required: true
+      selector:
+        time:
+    schedule_end:
+      name: Fin horario
+      description: "Hora fin confort (HH:MM) — puede cruzar medianoche"
+      required: true
+      selector:
+        time:
+
+set_zone_demand_weight:
+  name: Ajustar Peso Demanda Zona
+  description: >
+    Establece manualmente el peso de demanda de una zona. Este valor
+    será sustituido en el próximo ciclo del AutoTuner si está activo.
+  fields:
+    zone_id:
+      name: Zona
+      required: true
+      selector:
+        select:
+          options:
+            - {value: "salon",     label: "Salón"}
+            - {value: "hab_alvaro",label: "Habitación Álvaro"}
+            - {value: "hab_inv",   label: "Habitación Invitados"}
+            - {value: "hab_mat",   label: "Habitación Matrimonio"}
+    weight:
+      name: Peso [0.05 – 1.0]
+      description: "Proporción de demanda relativa al total de zonas"
+      required: true
+      selector:
+        number:
+          min: 0.05
+          max: 1.0
+          step: 0.05
+          mode: slider
+
+force_seasonal_mode:
+  name: Forzar Modo Estacional
+  description: >
+    Fuerza el modo de batería LUNA2000 a MSC, TOU o devuelve el control
+    al evaluador automático. En modo "auto" se evalúa en el próximo ciclo.
+  fields:
+    mode:
+      name: Modo
+      required: true
+      selector:
+        select:
+          options:
+            - {value: "msc",  label: "MSC — Maximizar Autoconsumo"}
+            - {value: "tou",  label: "TOU — Tarifa por Horas"}
+            - {value: "auto", label: "AUTO — Evaluación automática"}
+
+calibrate_ac_limit:
+  name: Calibrar Límite Carga AC
+  description: >
+    Fuerza calibración inmediata del límite de carga AC de la LUNA2000
+    analizando el historial de cargas nocturnas del recorder (P90).
+  fields: {}
+
+send_companion_training:
+  name: Enviar Entrenamiento Companion
+  description: >
+    Envía el paquete de datos histórico a la Companion App para
+    entrenamiento del modelo RC gray-box + ML. Requiere Companion App activa.
+  fields: {}
+
+set_setpoint_offset:
+  name: Ajuste Offset Setpoint
+  description: >
+    Aplica un offset temporal al setpoint de una zona (boost o reducción).
+    El offset expira automáticamente transcurridos los minutos indicados.
+  fields:
+    zone_id:
+      name: Zona
+      required: true
+      selector:
+        select:
+          options:
+            - {value: "salon",     label: "Salón"}
+            - {value: "hab_alvaro",label: "Habitación Álvaro"}
+            - {value: "hab_inv",   label: "Habitación Invitados"}
+            - {value: "hab_mat",   label: "Habitación Matrimonio"}
+    offset_celsius:
+      name: Offset (°C)
+      description: "Positivo = más calor | negativo = más frío"
+      required: true
+      selector:
+        number:
+          min: -5.0
+          max: 5.0
+          step: 0.5
+          unit_of_measurement: "°C"
+          mode: slider
+    duration_minutes:
+      name: Duración (min)
+      description: "El offset expira automáticamente"
+      required: false
+      default: 60
+      selector:
+        number:
+          min: 15
+          max: 480
+          step: 15
+          unit_of_measurement: "min"
+          mode: slider

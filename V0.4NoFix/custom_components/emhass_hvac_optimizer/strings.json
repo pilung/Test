@@ -1,0 +1,217 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Basic Configuration",
+        "description": "EMHASS URL and main sensors. All fields are pre-filled with known system entities.",
+        "data": {
+          "emhass_url": "EMHASS URL",
+          "temp_exterior_sensor": "Outdoor Temperature Sensor",
+          "hvac_current_sensor": "HVAC Current Sensor (A)",
+          "thermal_base_temp": "Degree Days Base Temperature (°C)",
+          "simulation_mode": "Simulation Mode (observe only — no actions)",
+          "auto_tune_enabled": "Enable Daily Auto-Tuning"
+        },
+        "data_description": {
+          "emhass_url": "Usually http://homeassistant.local:5000",
+          "simulation_mode": "Recommended ON for first 7 days",
+          "thermal_base_temp": "Heating starts below this temperature"
+        }
+      },
+      "ath": {
+        "title": "ESPAltherma Sensors",
+        "description": "Daikin Altherma sensors via ESPAltherma. Pre-filled with your system entities.",
+        "data": {
+          "ath_impulsion": "Supply Temperature R1T (°C)",
+          "ath_retorno": "Return Temperature R4T (°C)",
+          "ath_caudal": "Flow Rate (L/min)",
+          "ath_cop": "Instantaneous COP",
+          "ath_mode": "Operating Mode (optional)",
+          "use_cop": "Use real COP sensor for thermal calculations"
+        }
+      },
+      "global_sensors": {
+        "title": "PV · Battery · Grid Sensors",
+        "description": "Huawei SUN2000 / LUNA2000 sensors. Pre-filled with your system entities.",
+        "data": {
+          "battery_soc_sensor": "Battery SOC (%)",
+          "pv_power_sensor": "PV Power (W)",
+          "grid_power_sensor": "Grid Power (W, bidirectional)",
+          "house_load_sensor": "House Load (W)"
+        }
+      },
+      "zone": {
+        "title": "Zone {zone_num}/4 — {zone_name}",
+        "description": "Configure comfort zone. Pre-filled with Daikin Altherma zone entities.",
+        "data": {
+          "zone_name": "Zone Name",
+          "zone_climate": "Climate Entity",
+          "zone_temp_primary": "Primary Temperature Sensor",
+          "zone_temp_secondary": "Additional Temperature Sensors (optional)",
+          "zone_demand_weight": "Demand Weight (relative priority vs other zones)",
+          "zone_schedule_start": "Comfort Schedule Start",
+          "zone_schedule_end": "Comfort Schedule End",
+          "zone_enabled": "Zone Active"
+        },
+        "data_description": {
+          "zone_demand_weight": "Will be auto-calibrated. Initial value is a guide.",
+          "zone_temp_secondary": "Averaged with primary for operative temperature"
+        }
+      },
+      "companion_advanced": {
+        "title": "Companion App & Advanced Options",
+        "description": "Optional Companion App (RC/ML models) and buffer tank configuration.",
+        "data": {
+          "companion_app_enabled": "Enable Companion App (advanced thermal models)",
+          "companion_app_url": "Companion App URL",
+          "use_buffer_tank": "Buffer Tank (thermal inertia tank present)",
+          "buffer_tank_liters": "Buffer Tank Volume (L)"
+        },
+        "data_description": {
+          "companion_app_enabled": "Requires Docker container running on local network",
+          "buffer_tank_liters": "Used to calculate exploitable solar kWh"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to EMHASS. Check URL and that EMHASS add-on is running.",
+      "invalid_auth": "Authentication failed",
+      "unknown": "Unexpected error. Check logs."
+    },
+    "abort": {
+      "already_configured": "EMHASS HVAC Optimizer is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Basic Configuration",
+        "data": {}
+      },
+      "ath": {
+        "title": "ESPAltherma Sensors",
+        "data": {}
+      },
+      "global_sensors": {
+        "title": "PV · Battery · Grid Sensors",
+        "data": {}
+      },
+      "zone": {
+        "title": "Zone {zone_num}/4 — {zone_name}",
+        "data": {}
+      },
+      "companion_advanced": {
+        "title": "Companion App & Advanced",
+        "data": {}
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "thermal_factor": {
+        "name": "Thermal Factor kWh/DD"
+      },
+      "degree_days_today": {
+        "name": "Degree Days Today"
+      },
+      "degree_days_tomorrow": {
+        "name": "Degree Days Forecast Tomorrow"
+      },
+      "thermal_load_forecast": {
+        "name": "Thermal Load Forecast 48h"
+      },
+      "thermal_model_active": {
+        "name": "Thermal Model Active"
+      },
+      "thermal_model_confidence": {
+        "name": "Thermal Model Confidence"
+      },
+      "thermal_prediction_mae": {
+        "name": "Thermal Prediction MAE"
+      },
+      "thermal_power_kw": {
+        "name": "Thermal Power kW"
+      },
+      "apparent_temperature": {
+        "name": "Apparent Outdoor Temperature"
+      },
+      "cop_current": {
+        "name": "Current Estimated COP"
+      },
+      "battery_charge_limit": {
+        "name": "Dynamic Battery Charge Limit"
+      },
+      "battery_soc_target": {
+        "name": "Battery SOC Target 48h"
+      },
+      "battery_efficiency": {
+        "name": "Battery Round-Trip Efficiency"
+      },
+      "hvac_mode_current": {
+        "name": "HVAC Current Mode"
+      },
+      "hvac_solar_opportunity": {
+        "name": "HVAC Solar Opportunity"
+      },
+      "price_source": {
+        "name": "Electricity Price Source"
+      },
+      "price_grid_status": {
+        "name": "Grid Price Status"
+      },
+      "seasonal_mode": {
+        "name": "Recommended Seasonal Mode"
+      },
+      "self_consumption": {
+        "name": "Solar Self-Consumption Today"
+      },
+      "self_sufficiency": {
+        "name": "Solar Self-Sufficiency Today"
+      },
+      "system_efficiency_score": {
+        "name": "System Efficiency Score"
+      },
+      "companion_status": {
+        "name": "Companion App Status"
+      }
+    }
+  },
+  "services": {
+    "force_emhass_mpc": {
+      "name": "Force EMHASS MPC",
+      "description": "Trigger an immediate EMHASS MPC optimisation cycle with enriched payload."
+    },
+    "run_autotuner": {
+      "name": "Run AutoTuner",
+      "description": "Execute a full auto-calibration cycle (or specific target)."
+    },
+    "set_simulation_mode": {
+      "name": "Set Simulation Mode",
+      "description": "Enable or disable simulation mode (observe-only)."
+    },
+    "set_zone_schedule": {
+      "name": "Set Zone Schedule",
+      "description": "Update comfort schedule for a zone."
+    },
+    "set_zone_demand_weight": {
+      "name": "Set Zone Demand Weight",
+      "description": "Manually set demand weight for a zone."
+    },
+    "force_seasonal_mode": {
+      "name": "Force Seasonal Mode",
+      "description": "Force MSC, TOU, or revert to automatic evaluation."
+    },
+    "calibrate_ac_limit": {
+      "name": "Calibrate AC Charge Limit",
+      "description": "Force AC charge limit calibration from recorder history."
+    },
+    "send_companion_training": {
+      "name": "Send Companion Training",
+      "description": "Send 7-day historical data to Companion App for RC/ML training."
+    },
+    "set_setpoint_offset": {
+      "name": "Set Setpoint Offset",
+      "description": "Apply a temporary temperature offset to a zone setpoint."
+    }
+  }
+}

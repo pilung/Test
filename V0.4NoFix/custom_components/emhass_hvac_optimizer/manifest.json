@@ -1,0 +1,19 @@
+{
+  "domain": "emhass_hvac_optimizer",
+  "name": "EMHASS HVAC Optimizer",
+  "version": "0.4.0",
+  "description": "Predicción térmica adaptativa y co-optimización HVAC+batería. Arquitectura híbrida: modelos ligeros en HA (pure Python, zero deps) + Companion App Docker para RC/ML/AutoTuner avanzado.",
+  "documentation": "https://github.com/tu-repo/emhass-hvac-optimizer",
+  "issue_tracker": "https://github.com/tu-repo/emhass-hvac-optimizer/issues",
+  "codeowners": [
+    "@tu-usuario"
+  ],
+  "config_flow": true,
+  "iot_class": "local_push",
+  "requirements": [],
+  "dependencies": [],
+  "after_dependencies": [
+    "recorder"
+  ],
+  "homeassistant": "2024.1.0"
+}
