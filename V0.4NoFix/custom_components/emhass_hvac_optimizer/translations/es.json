@@ -1,0 +1,217 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuración básica",
+        "description": "URL de EMHASS y sensores principales. Todos los campos están pre-rellenados con las entidades conocidas del sistema.",
+        "data": {
+          "emhass_url": "URL de EMHASS",
+          "temp_exterior_sensor": "Sensor temperatura exterior",
+          "hvac_current_sensor": "Sensor corriente HVAC (A)",
+          "thermal_base_temp": "Temperatura base Grados Día (°C)",
+          "simulation_mode": "Modo simulación (solo observar — sin acciones)",
+          "auto_tune_enabled": "Activar auto-calibración diaria"
+        },
+        "data_description": {
+          "emhass_url": "Normalmente http://homeassistant.local:5000",
+          "simulation_mode": "Recomendado activado los primeros 7 días",
+          "thermal_base_temp": "Calefacción se activa por debajo de esta temperatura"
+        }
+      },
+      "ath": {
+        "title": "Sensores ESPAltherma",
+        "description": "Sensores Daikin Altherma vía ESPAltherma. Pre-rellenados con tus entidades del sistema.",
+        "data": {
+          "ath_impulsion": "Temperatura impulsión R1T (°C)",
+          "ath_retorno": "Temperatura retorno R4T (°C)",
+          "ath_caudal": "Caudal (L/min)",
+          "ath_cop": "COP instantáneo",
+          "ath_mode": "Modo funcionamiento (opcional)",
+          "use_cop": "Usar sensor COP real para cálculos térmicos"
+        }
+      },
+      "global_sensors": {
+        "title": "Sensores PV · Batería · Red",
+        "description": "Sensores Huawei SUN2000 / LUNA2000. Pre-rellenados con tus entidades del sistema.",
+        "data": {
+          "battery_soc_sensor": "SOC batería (%)",
+          "pv_power_sensor": "Potencia FV (W)",
+          "grid_power_sensor": "Potencia red (W, bidireccional)",
+          "house_load_sensor": "Consumo casa (W)"
+        }
+      },
+      "zone": {
+        "title": "Zona {zone_num}/4 — {zone_name}",
+        "description": "Configura la zona de confort. Pre-rellenada con entidades Daikin Altherma.",
+        "data": {
+          "zone_name": "Nombre de la zona",
+          "zone_climate": "Entidad climate",
+          "zone_temp_primary": "Sensor temperatura principal",
+          "zone_temp_secondary": "Sensores temperatura adicionales (opcional)",
+          "zone_demand_weight": "Peso de demanda (prioridad relativa entre zonas)",
+          "zone_schedule_start": "Inicio horario confort",
+          "zone_schedule_end": "Fin horario confort",
+          "zone_enabled": "Zona activa"
+        },
+        "data_description": {
+          "zone_demand_weight": "Se auto-calibrará. El valor inicial es orientativo.",
+          "zone_temp_secondary": "Se promedia con el sensor principal para temperatura operativa"
+        }
+      },
+      "companion_advanced": {
+        "title": "Companion App y opciones avanzadas",
+        "description": "Companion App opcional (modelos RC/ML) y configuración depósito inercia.",
+        "data": {
+          "companion_app_enabled": "Activar Companion App (modelos térmicos avanzados)",
+          "companion_app_url": "URL Companion App",
+          "use_buffer_tank": "Depósito de inercia (presente en la instalación)",
+          "buffer_tank_liters": "Volumen depósito inercia (L)"
+        },
+        "data_description": {
+          "companion_app_enabled": "Requiere contenedor Docker en red local",
+          "buffer_tank_liters": "Usado para calcular kWh solares aprovechables"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar a EMHASS. Comprueba la URL y que el add-on esté en ejecución.",
+      "invalid_auth": "Autenticación fallida",
+      "unknown": "Error inesperado. Consulta los logs."
+    },
+    "abort": {
+      "already_configured": "EMHASS HVAC Optimizer ya está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Configuración básica",
+        "data": {}
+      },
+      "ath": {
+        "title": "Sensores ESPAltherma",
+        "data": {}
+      },
+      "global_sensors": {
+        "title": "Sensores PV · Batería · Red",
+        "data": {}
+      },
+      "zone": {
+        "title": "Zona {zone_num}/4 — {zone_name}",
+        "data": {}
+      },
+      "companion_advanced": {
+        "title": "Companion App y opciones avanzadas",
+        "data": {}
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "thermal_factor": {
+        "name": "Factor Térmico kWh/DD"
+      },
+      "degree_days_today": {
+        "name": "Grados Día Hoy"
+      },
+      "degree_days_tomorrow": {
+        "name": "Grados Día Forecast Mañana"
+      },
+      "thermal_load_forecast": {
+        "name": "Forecast Carga Térmica 48h"
+      },
+      "thermal_model_active": {
+        "name": "Modelo Térmico Activo"
+      },
+      "thermal_model_confidence": {
+        "name": "Confianza Modelo Térmico"
+      },
+      "thermal_prediction_mae": {
+        "name": "Error Predicción Térmica MAE"
+      },
+      "thermal_power_kw": {
+        "name": "Potencia Térmica kW"
+      },
+      "apparent_temperature": {
+        "name": "Temperatura Aparente Exterior"
+      },
+      "cop_current": {
+        "name": "COP Estimado Actual"
+      },
+      "battery_charge_limit": {
+        "name": "Límite Carga Batería Dinámico"
+      },
+      "battery_soc_target": {
+        "name": "Target SOC Batería 48h"
+      },
+      "battery_efficiency": {
+        "name": "Eficiencia Round-Trip Batería"
+      },
+      "hvac_mode_current": {
+        "name": "Modo Actual HVAC"
+      },
+      "hvac_solar_opportunity": {
+        "name": "Oportunidad Solar HVAC"
+      },
+      "price_source": {
+        "name": "Fuente Precio Electricidad"
+      },
+      "price_grid_status": {
+        "name": "Estado Precio Red"
+      },
+      "seasonal_mode": {
+        "name": "Modo Estacional Recomendado"
+      },
+      "self_consumption": {
+        "name": "Autoconsumo Solar Hoy"
+      },
+      "self_sufficiency": {
+        "name": "Autosuficiencia Solar Hoy"
+      },
+      "system_efficiency_score": {
+        "name": "Puntuación Eficiencia Sistema"
+      },
+      "companion_status": {
+        "name": "Estado Companion App"
+      }
+    }
+  },
+  "services": {
+    "force_emhass_mpc": {
+      "name": "Forzar EMHASS MPC",
+      "description": "Dispara inmediatamente un ciclo de optimización EMHASS MPC con payload enriquecido."
+    },
+    "run_autotuner": {
+      "name": "Ejecutar AutoTuner",
+      "description": "Ejecuta ciclo completo de auto-calibración (o un objetivo concreto)."
+    },
+    "set_simulation_mode": {
+      "name": "Modo Simulación",
+      "description": "Activa o desactiva el modo simulación (solo observar, sin acciones)."
+    },
+    "set_zone_schedule": {
+      "name": "Ajustar Horario Zona",
+      "description": "Modifica el horario de confort de una zona."
+    },
+    "set_zone_demand_weight": {
+      "name": "Ajustar Peso Demanda Zona",
+      "description": "Establece manualmente el peso de demanda de una zona."
+    },
+    "force_seasonal_mode": {
+      "name": "Forzar Modo Estacional",
+      "description": "Fuerza MSC, TOU o vuelve a evaluación automática."
+    },
+    "calibrate_ac_limit": {
+      "name": "Calibrar Límite Carga AC",
+      "description": "Fuerza calibración del límite de carga AC de la batería desde el historial."
+    },
+    "send_companion_training": {
+      "name": "Enviar Entrenamiento Companion",
+      "description": "Envía 7 días de historial a la Companion App para entrenamiento RC/ML."
+    },
+    "set_setpoint_offset": {
+      "name": "Ajuste Offset Setpoint",
+      "description": "Aplica un offset temporal de temperatura al setpoint de una zona."
+    }
+  }
+}
