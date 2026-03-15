@@ -1,0 +1,65 @@
+# EMHASS HVAC Companion App — docker-compose.yml
+# Despliegue en la misma máquina que Home Assistant
+#
+# Uso:
+#   docker compose up -d          # arrancar
+#   docker compose logs -f        # ver logs
+#   docker compose down           # parar
+#   docker compose pull && docker compose up -d  # actualizar
+
+services:
+  emhass-hvac-companion:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: emhass_hvac_companion
+    restart: unless-stopped
+
+    ports:
+      - "8765:8765"       # API REST accesible desde HA
+
+    volumes:
+      - companion_data:/app/data   # modelos persistidos entre reinicios
+
+    environment:
+      - LOG_LEVEL=INFO
+      - DATA_DIR=/app/data
+      - PORT=8765
+      # Opcional: semilla aleatoria para reproducibilidad bootstrap
+      - NUMPY_SEED=42
+
+    # Límites de recursos (Raspberry Pi 4 / NUC)
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+    # Red compartida con Home Assistant si está en Docker
+    # networks:
+    #   - homeassistant_net
+
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  companion_data:
+    driver: local
+
+# networks:
+#   homeassistant_net:
+#     external: true
